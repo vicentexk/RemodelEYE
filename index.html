@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>eye gate — Controle de acesso escolar</title>
+  <link rel="stylesheet" href="./css/app.css"/>
+  <link rel="icon" href="./img/logo.png"/>
+</head>
+<body>
+
+<!-- ================= SPRITE (ícones + logo) ================= -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- LOGO: olho âmbar com fechadura (recriação vetorial da logo oficial) -->
+    <symbol id="logo-eye" viewBox="0 0 96 60">
+      <path fill="#FEB914" d="M48 2C26 2 8 17 2 30c6 13 24 28 46 28s40-15 46-28C88 17 70 2 48 2z"/>
+      <circle cx="48" cy="26" r="14" fill="#17140F"/>
+      <path fill="#FEB914" d="M43.5 36h9l4.7 22h-18.4z"/>
+      <circle cx="48" cy="26" r="7.5" fill="#FEB914"/>
+    </symbol>
+    <!-- olho grande do login: pupila separada pra seguir o mouse -->
+    <symbol id="logo-eye-live" viewBox="0 0 96 60">
+      <path fill="#ED9B00" d="M48 2C26 2 8 17 2 30c6 13 24 28 46 28s40-15 46-28C88 17 70 2 48 2z"/>
+      <g class="eye-pupil" id="bigEyePupil">
+        <circle cx="48" cy="26" r="14" fill="#93D2BD"/>
+        <path fill="#01121A" d="M43.5 36h9l4.7 22h-18.4z"/>
+        <circle cx="48" cy="26" r="7.5" fill="#01121A"/>
+      </g>
+    </symbol>
+    <g id="i-grid"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></g>
+    <g id="i-video"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></g>
+    <g id="i-user-plus"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></g>
+    <g id="i-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></g>
+    <g id="i-list"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></g>
+    <g id="i-file"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></g>
+    <g id="i-shield"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></g>
+    <g id="i-lock"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></g>
+    <g id="i-unlock"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></g>
+    <g id="i-trash"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></g>
+    <g id="i-award"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></g>
+    <g id="i-logout"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></g>
+    <g id="i-x"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></g>
+    <g id="i-check"><polyline points="20 6 9 17 4 12"/></g>
+    <g id="i-alert"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></g>
+    <g id="i-search"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></g>
+    <g id="i-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></g>
+    <g id="i-refresh"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></g>
+    <g id="i-camera"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></g>
+    <g id="i-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></g>
+    <g id="i-calendar"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></g>
+    <g id="i-zap"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></g>
+    <g id="i-print"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></g>
+  </defs>
+</svg>
+
+<div class="loading-bar" id="loadingBar"></div>
+<div id="toast-root"></div>
+<div class="modal-root" id="modalRoot"></div>
+<div id="printArea"></div>
+
+<!-- ================= TELA: AUTH — o olho que observa ================= -->
+<section class="screen active" id="screen-auth">
+  <div class="auth-side">
+    <!-- composição geométrica abstrata -->
+    <div class="geo geo-quarter" style="width:120px;height:120px;background:var(--red);border:2px solid var(--ink);border-radius:0 100% 0 0;left:-2px;top:-2px"></div>
+    <div class="geo geo-circle" style="width:64px;height:64px;background:var(--teal);border:2px solid var(--ink);left:132px;top:34px"></div>
+    <div class="geo geo-circle" style="width:210px;height:210px;background:var(--teal);border:2px solid var(--ink);right:-70px;top:-70px;animation:floaty 9s ease-in-out infinite"></div>
+    <div class="geo geo-tri" style="width:120px;height:105px;background:var(--wine);right:7%;top:15%"></div>
+    <div class="geo geo-half" style="width:140px;height:70px;background:var(--yellow);border:2px solid var(--ink);left:-26px;bottom:19%;transform:rotate(-14deg)"></div>
+    <div class="geo geo-stripes" style="width:58px;height:80px;right:6%;bottom:24%;opacity:.8"></div>
+    <div class="geo geo-quarter-b" style="width:96px;height:96px;background:var(--orange);border:2px solid var(--ink);right:26%;bottom:-2px"></div>
+    <div class="geo geo-dots" style="width:120px;height:70px;left:12px;bottom:6%;opacity:.4"></div>
+    <div class="auth-micro-top">
+      <svg class="eye-logo" viewBox="0 0 96 60"><use href="#logo-eye"/></svg>
+      <span class="micro">EYE GATE <b>//</b> SISTEMA DE ACESSO ESCOLAR <b>v2.0</b></span>
+    </div>
+
+    <div class="big-eye">
+      <svg viewBox="0 0 96 60" class="eye-iris">
+        <path fill="#FEB914" d="M48 2C26 2 8 17 2 30c6 13 24 28 46 28s40-15 46-28C88 17 70 2 48 2z"/>
+        <g class="eye-pupil" id="bigEyePupil">
+          <circle cx="48" cy="26" r="14" fill="#17140F"/>
+          <path fill="#FEB914" d="M43.5 36h9l4.7 22h-18.4z"/>
+          <circle cx="48" cy="26" r="7.5" fill="#FEB914"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="auth-hero">
+      <p class="micro" style="margin-bottom:10px"><b>[ 01 ]</b> CONTROLE DE ENTRADA & SAÍDA</p>
+      <h1>A portaria<br>sabe <em>quem</em><br><em>chega.</em></h1>
+      <p>Reconhecimento facial em tempo real, registros automáticos e relatórios completos. A catraca só abre pra quem pertence.</p>
+      <div class="auth-ticks">
+        <div class="auth-tick"><span class="tk"></span>Identificação na catraca em menos de 1 segundo</div>
+        <div class="auth-tick"><span class="tk"></span>Entrada e saída registradas automaticamente</div>
+        <div class="auth-tick"><span class="tk"></span>Alternativa por tag · pensado pra LGPD</div>
+      </div>
+    </div>
+
+    <div class="auth-foot-micro">
+      <span class="micro"><b>GIAN</b> · JULIO · MOZER · RAUL · RICHARD · VICENTE</span>
+    </div>
+  </div>
+
+  <div class="auth-form-side">
+    <div class="geo geo-dots" style="width:110px;height:80px;left:26px;bottom:26px;opacity:.35"></div>
+    <div class="geo geo-circle" style="width:58px;height:58px;background:var(--wine);border:2px solid var(--ink);right:40px;top:36px"></div>
+    <div class="geo geo-stripes" style="width:46px;height:64px;right:70px;bottom:40px;opacity:.55"></div>
+    <div class="auth-panel">
+      <div class="panel bracket">
+        <div class="panel-head">
+          <div class="auth-head">
+            <h2 id="authTitle">Bem-vindo de volta</h2>
+            <p id="authSubtitle">Entre para acessar o painel escolar</p>
+          </div>
+        </div>
+
+        <div class="seg auth-seg" id="authSeg">
+          <button type="button" class="on" id="segLogin">Entrar</button>
+          <button type="button" id="segSignup">Criar conta</button>
+        </div>
+
+        <form id="authForm" autocomplete="off">
+          <div class="field" id="fieldName" style="display:none">
+            <label class="label">Nome completo</label>
+            <input class="input" id="fNome" type="text" placeholder="Ex.: Maria Silva" maxlength="80"/>
+          </div>
+          <div class="field">
+            <label class="label">E-mail</label>
+            <input class="input" id="fEmail" type="email" placeholder="voce@escola.com" required/>
+          </div>
+          <div class="field">
+            <label class="label">Senha</label>
+            <input class="input" id="fSenha" type="password" placeholder="••••••••" required minlength="4"/>
+          </div>
+          <button class="btn btn-primary btn-block" id="authSubmit" type="submit" style="margin-top:6px">Entrar no sistema</button>
+        </form>
+
+        <p class="auth-admin-note" id="authNote">É administrador? <a id="noteAdmin"><b>Entrar como admin</b></a></p>
+        <p class="auth-foot">EYE GATE v2.0 · <a id="linkSuporte">SUPORTE</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TELA: APP ================= -->
+<section class="screen" id="screen-app">
+  <div class="shell">
+
+    <aside class="sidebar">
+      <div class="brand">
+        <svg class="eye-logo" viewBox="0 0 96 60"><use href="#logo-eye"/></svg>
+        <div>
+          <div class="brand-name">eye<span>gate</span></div>
+          <div class="brand-sub">Acesso escolar</div>
+        </div>
+      </div>
+
+      <div class="nav-label">Operação</div>
+      <button class="nav-item active" data-view="dashboard"><span class="num">01</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-grid"/></svg>Dashboard</button>
+      <button class="nav-item" data-view="monitor"><span class="num">02</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-video"/></svg>Monitor</button>
+      <button class="nav-item" data-view="cadastro"><span class="num">03</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-user-plus"/></svg>Cadastro facial</button>
+      <button class="nav-item" data-view="registros"><span class="num">04</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-list"/></svg>Registros</button>
+      <button class="nav-item" data-view="relatorios"><span class="num">05</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-file"/></svg>Relatórios</button>
+
+      <div id="navAdminWrap">
+        <div class="nav-label">Administração</div>
+        <button class="nav-item" data-view="admin"><span class="num">06</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-shield"/></svg>Gestão de contas</button>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="sys-card"><span class="dot" id="connDot"></span><span id="connLabel">CONECTANDO…</span></div>
+        <div class="version-tag">EYE GATE · v2.0</div>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div>
+          <div class="topbar-title" id="viewTitle">Dashboard</div>
+          <div class="topbar-sub" id="viewSubtitle">// visão geral do sistema</div>
+        </div>
+        <div class="topbar-right">
+          <span class="topbar-clock" id="topClock">--:--:--</span>
+          <div class="user-chip">
+            <div class="avatar" id="userAvatar">?</div>
+            <div>
+              <div class="u-name" id="userName">Usuário</div>
+              <div class="u-role" id="userRole">—</div>
+            </div>
+            <span class="badge-role" id="userBadge" style="display:none">ADMIN</span>
+          </div>
+          <button class="btn btn-ghost btn-icon" id="btnLogout" title="Sair"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-logout"/></svg></button>
+        </div>
+      </header>
+
+      <div class="content">
+
+        <!-- ========== DASHBOARD ========== -->
+        <div class="view active" id="view-dashboard">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-head"><span class="stat-idx">M.01 // ALUNOS</span></div>
+              <div class="stat-value" id="stAlunos">—</div>
+              <div class="stat-label">Cadastro facial ativo</div>
+              <div class="stat-rule"><i style="width:86%"></i></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-head"><span class="stat-idx">M.02 // CONTAS</span></div>
+              <div class="stat-value" id="stUsuarios">—</div>
+              <div class="stat-label">Acessos ao sistema</div>
+              <div class="stat-rule"><i style="width:52%"></i></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-head"><span class="stat-idx">M.03 // HOJE</span></div>
+              <div class="stat-value" id="stHoje">—</div>
+              <div class="stat-label">Registros de hoje</div>
+              <div class="stat-rule"><i style="width:71%"></i></div>
+            </div>
+            <div class="stat-card c-ember">
+              <div class="stat-head"><span class="stat-idx">M.04 // HISTÓRICO</span></div>
+              <div class="stat-value" id="stTotal">—</div>
+              <div class="stat-label">Total de registros</div>
+              <div class="stat-rule"><i style="width:94%"></i></div>
+            </div>
+          </div>
+
+          <div class="dash-grid">
+            <div class="panel bracket">
+              <div class="panel-head"><div class="panel-title"><span class="idx">[A]</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-calendar"/></svg>Acessos — últimos 7 dias</div></div>
+              <div class="chart-wrap"><canvas id="chartWeek" height="240"></canvas></div>
+            </div>
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title"><span class="idx">[B]</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-zap"/></svg>Entradas × Saídas</div></div>
+              <div class="chart-wrap"><canvas id="chartDonut" height="240"></canvas></div>
+            </div>
+          </div>
+
+          <div class="dash-grid" style="margin-top:14px">
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title"><span class="idx">[C]</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-clock"/></svg>Últimos acessos</div></div>
+              <div class="feed" id="feedRecent"><div class="empty"><p>Carregando…</p></div></div>
+            </div>
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title"><span class="idx">[D]</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-calendar"/></svg>Movimento por hora (hoje)</div></div>
+              <div class="chart-wrap"><canvas id="chartHours" height="240"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== MONITOR ========== -->
+        <div class="view" id="view-monitor">
+          <div class="monitor-grid">
+            <div class="monitor-stage">
+              <div class="video-card" id="monitorCard">
+                <video id="monitorVideo" autoplay muted playsinline></video>
+                <canvas class="overlay" id="monitorOverlay"></canvas>
+                <div class="scanline"></div>
+                <div class="video-empty" id="monitorEmpty">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-video"/></svg>
+                  <p>Clique em <b>ATIVAR MONITOR</b> para iniciar a câmera</p>
+                </div>
+                <div class="video-hud">
+                  <span class="hud-pill" id="hudStatus"><span class="dot"></span><span id="hudText">PARADO</span></span>
+                  <span class="hud-fps" id="hudFps"></span>
+                </div>
+                <div class="recognized-banner" id="recBanner">
+                  <div class="rb-check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><use href="#i-check"/></svg></div>
+                  <div><b id="rbName">Aluno</b><span id="rbInfo">Entrada registrada</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="monitor-side">
+              <div class="panel bracket">
+                <div class="panel-head"><div class="panel-title"><span class="idx">[P]</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-zap"/></svg>Controle</div></div>
+                <div class="monitor-controls">
+                  <button class="btn btn-primary" id="btnMonitorToggle"><svg viewBox="0 0 24 24" fill="currentColor"><use href="#i-video"/></svg><span>Ativar monitor</span></button>
+                  <button class="btn" id="btnMonitorReload" title="Recarregar alunos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-refresh"/></svg></button>
+                </div>
+                <div style="margin-top:14px">
+                  <div class="settings-row"><span>Modo de detecção</span>
+                    <select class="input" id="selDetector" style="width:auto;padding:6px 10px;font-size:12px">
+                      <option value="224">⚡ Rápido</option>
+                      <option value="320" selected>⚖️ Equilibrado</option>
+                      <option value="416">🎯 Preciso</option>
+                    </select>
+                  </div>
+                  <div class="settings-row"><span>Reagendar após</span>
+                    <select class="input" id="selCooldown" style="width:auto;padding:6px 10px;font-size:12px">
+                      <option value="8">8 s</option>
+                      <option value="15" selected>15 s</option>
+                      <option value="30">30 s</option>
+                      <option value="60">1 min</option>
+                    </select>
+                  </div>
+                  <div class="settings-row"><span>Som ao reconhecer</span>
+                    <label class="switch"><input type="checkbox" id="chkSound" checked/><span class="track"></span></label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel" style="flex:1;min-height:0;display:flex;flex-direction:column">
+                <div class="panel-head"><div class="panel-title"><span class="idx">[L]</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-list"/></svg>Reconhecimentos ao vivo</div></div>
+                <div class="feed" id="feedLive"><div class="empty"><p>Nenhum reconhecimento ainda</p></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== CADASTRO ========== -->
+        <div class="view" id="view-cadastro">
+          <div class="cad-grid">
+            <div class="panel bracket">
+              <div class="panel-head"><div class="panel-title"><span class="idx">[F]</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-camera"/></svg>Captura facial</div></div>
+              <div class="cam-box">
+                <video id="cadVideo" autoplay muted playsinline></video>
+                <div class="pose-overlay" id="poseOverlay"><div class="pose-instr" id="poseInstr">Preencha os dados e inicie</div></div>
+              </div>
+              <div class="pose-slots" id="poseSlots"></div>
+              <div class="progressbar"><div id="poseProgress"></div></div>
+              <div style="display:flex;gap:10px;margin-top:16px">
+                <button class="btn btn-primary" id="btnCamToggle" style="flex:1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-camera"/></svg><span>Iniciar câmera</span></button>
+                <button class="btn" id="btnCapture" disabled>Capturar pose</button>
+              </div>
+              <p style="font-size:11.5px;color:var(--faint);margin-top:10px;font-family:var(--mono)">O sistema valida cada pose automaticamente pelos 68 pontos do rosto.</p>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+              <div class="panel">
+                <div class="panel-head"><div class="panel-title"><span class="idx">[D]</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-user-plus"/></svg>Dados do aluno</div></div>
+                <div class="field"><label class="label">Nome completo *</label><input class="input" id="cadNome" placeholder="Ex.: João Pedro Souza" maxlength="90"/></div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                  <div class="field"><label class="label">Matrícula</label><input class="input" id="cadMatricula" placeholder="Ex.: 2026-0142"/></div>
+                  <div class="field"><label class="label">Turma</label><input class="input" id="cadTurma" placeholder="Ex.: 9º B"/></div>
+                </div>
+                <button class="btn btn-primary btn-block" id="btnSalvarAluno" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-check"/></svg>Salvar aluno</button>
+              </div>
+
+              <div class="panel" style="min-width:0">
+                <div class="panel-head">
+                  <div class="panel-title"><span class="idx">[A]</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-users"/></svg>Alunos (<span id="cadCount">0</span>)</div>
+                  <div style="position:relative;display:flex;align-items:center">
+                    <svg style="position:absolute;left:10px;width:13px;height:13px;color:var(--faint)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-search"/></svg>
+                    <input class="input" id="cadBusca" placeholder="Buscar aluno…" style="padding:7px 12px 7px 30px;font-size:12px;width:190px"/>
+                  </div>
+                </div>
+                <div class="alunos-list" id="alunosList"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== REGISTROS ========== -->
+        <div class="view" id="view-registros">
+          <div class="filters">
+            <div style="position:relative;display:flex;align-items:center">
+              <svg style="position:absolute;left:12px;width:14px;height:14px;color:var(--faint)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-search"/></svg>
+              <input class="input" id="regBusca" placeholder="Buscar aluno…" style="padding-left:34px"/>
+            </div>
+            <select class="input" id="regTipo"><option value="">Entrada e Saída</option><option value="Entrada">Só entradas</option><option value="Saída">Só saídas</option></select>
+            <input class="input" type="date" id="regData"/>
+            <button class="btn btn-ghost btn-sm" id="regLimpar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-x"/></svg>Limpar</button>
+            <span style="flex:1"></span>
+            <button class="btn btn-ok btn-sm" id="regCsv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-download"/></svg>Exportar CSV</button>
+            <button class="btn btn-sm" id="regRefresh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-refresh"/></svg></button>
+          </div>
+          <div class="panel" style="padding:0;overflow:hidden">
+            <div class="table-wrap" style="border:none;max-height:calc(100vh - 230px)">
+              <table class="tbl">
+                <thead><tr><th>Aluno</th><th>Tipo</th><th>Data</th><th>Horário</th></tr></thead>
+                <tbody id="regBody"></tbody>
+              </table>
+            </div>
+          </div>
+          <p style="text-align:center;color:var(--faint);font-size:11px;margin-top:12px;font-family:var(--mono)" id="regInfo"></p>
+        </div>
+
+        <!-- ========== RELATÓRIOS ========== -->
+        <div class="view" id="view-relatorios">
+          <div class="dash-grid">
+            <div class="panel bracket">
+              <div class="panel-head"><div class="panel-title"><span class="idx">[G]</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-file"/></svg>Gerar relatório</div></div>
+              <div class="field"><label class="label">Aluno</label><select class="input" id="relAluno"><option value="">Carregando…</option></select></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div class="field"><label class="label">De</label><input class="input" type="date" id="relDe"/></div>
+                <div class="field"><label class="label">Até</label><input class="input" type="date" id="relAte"/></div>
+              </div>
+              <button class="btn btn-primary btn-block" id="btnRelGerar">Pré-visualizar</button>
+            </div>
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title"><span class="idx">[R]</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-clock"/></svg>Resumo</div></div>
+              <div id="relResumo"><div class="empty"><p>Escolha um aluno e o período,<br>depois clique em pré-visualizar.</p></div></div>
+            </div>
+          </div>
+          <div class="panel" style="margin-top:14px">
+            <div class="panel-head">
+              <div class="panel-title"><span class="idx">[H]</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-list"/></svg>Histórico do período</div>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-sm btn-primary" id="btnRelPdf" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-download"/></svg>PDF</button>
+                <button class="btn btn-sm" id="btnRelPrint" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-print"/></svg>Imprimir</button>
+              </div>
+            </div>
+            <div class="table-wrap" style="border:none;max-height:420px">
+              <table class="tbl">
+                <thead><tr><th>Tipo</th><th>Data</th><th>Horário</th></tr></thead>
+                <tbody id="relBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== ADMIN ========== -->
+        <div class="view" id="view-admin">
+          <div class="seg seg-3" style="max-width:620px;margin-bottom:20px" id="adminSeg">
+            <button class="on" data-tab="usuarios">Usuários</button>
+            <button data-tab="alunos">Alunos</button>
+            <button data-tab="logs">Logs do sistema</button>
+          </div>
+
+          <div id="adminTab-usuarios">
+            <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+              <div class="stat-card"><div class="stat-head"><span class="stat-idx">M.01 // TOTAL</span></div><div class="stat-value" id="adTotal">—</div><div class="stat-label">Contas totais</div><div class="stat-rule"><i style="width:100%"></i></div></div>
+              <div class="stat-card"><div class="stat-head"><span class="stat-idx">M.02 // ADMINS</span></div><div class="stat-value" id="adAdmins">—</div><div class="stat-label">Administradores</div><div class="stat-rule"><i style="width:40%"></i></div></div>
+              <div class="stat-card c-ember"><div class="stat-head"><span class="stat-idx">M.03 // BLOQ.</span></div><div class="stat-value" id="adBloq">—</div><div class="stat-label">Contas bloqueadas</div><div class="stat-rule"><i style="width:18%"></i></div></div>
+            </div>
+            <div class="filters">
+              <div style="position:relative;display:flex;align-items:center">
+                <svg style="position:absolute;left:12px;width:14px;height:14px;color:var(--faint)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-search"/></svg>
+                <input class="input" id="adBusca" placeholder="Buscar por nome ou e-mail…" style="padding-left:34px;min-width:280px"/>
+              </div>
+              <span style="flex:1"></span>
+              <button class="btn btn-ok btn-sm" id="btnAdNovoAdmin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-shield"/></svg>Criar conta admin</button>
+            </div>
+            <div class="table-wrap" style="max-height:calc(100vh - 430px)">
+              <table class="tbl">
+                <thead><tr><th>Usuário</th><th>Nível</th><th>Situação</th><th style="text-align:right">Ações</th></tr></thead>
+                <tbody id="adBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="adminTab-alunos" style="display:none">
+            <div class="filters">
+              <div style="position:relative;display:flex;align-items:center">
+                <svg style="position:absolute;left:12px;width:14px;height:14px;color:var(--faint)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-search"/></svg>
+                <input class="input" id="adAlunoBusca" placeholder="Buscar aluno…" style="padding-left:34px;min-width:260px"/>
+              </div>
+              <span style="flex:1"></span>
+              <button class="btn btn-sm" id="btnAdAlunoRefresh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-refresh"/></svg>Atualizar</button>
+            </div>
+            <div class="table-wrap" style="max-height:calc(100vh - 300px)">
+              <table class="tbl">
+                <thead><tr><th>Aluno</th><th>Matrícula</th><th>Turma</th><th style="text-align:right">Ações</th></tr></thead>
+                <tbody id="adAlunoBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="adminTab-logs" style="display:none">
+            <div class="filters">
+              <span class="micro">ÚLTIMOS 200 REGISTROS DO SISTEMA</span>
+              <span style="flex:1"></span>
+              <button class="btn btn-ok btn-sm" id="btnAdLogsCsv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-download"/></svg>CSV</button>
+              <button class="btn btn-danger btn-sm" id="btnAdLogsClear"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-trash"/></svg>Limpar histórico</button>
+            </div>
+            <div class="table-wrap" style="max-height:calc(100vh - 300px)">
+              <table class="tbl">
+                <thead><tr><th>Aluno</th><th>Tipo</th><th>Data / hora</th></tr></thead>
+                <tbody id="adLogsBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="./vendor/supabase.js"></script>
+<script src="./vendor/jspdf.min.js"></script>
+<script src="./face-api.min.js"></script>
+
+<script src="./js/config.js"></script>
+<script src="./js/ui.js"></script>
+<script src="./js/data.js"></script>
+<script src="./js/charts.js"></script>
+<script src="./js/auth.js"></script>
+<script src="./js/face-core.js"></script>
+<script src="./js/cadastro.js"></script>
+<script src="./js/monitor.js"></script>
+<script src="./js/views.js"></script>
+<script src="./js/admin.js"></script>
+<script src="./js/app.js"></script>
+</body>
+</html>

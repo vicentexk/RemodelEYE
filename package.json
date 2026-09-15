@@ -1,0 +1,49 @@
+{
+  "name": "eye-gate",
+  "version": "2.0.0",
+  "description": "EYE GATE — Sistema de reconhecimento facial para controle de entrada e saída escolar",
+  "main": "electron/main.js",
+  "author": "Equipe EYE GATE",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win nsis portable",
+    "dist:installer": "electron-builder --win nsis"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.eyegate.school",
+    "productName": "EYE GATE",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "index.html",
+      "css/**/*",
+      "js/**/*",
+      "vendor/**/*",
+      "face-api.min.js",
+      "models/**/*",
+      "img/**/*",
+      "electron/**/*"
+    ],
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ],
+      "icon": "img/logo.png"
+    },
+    "nsis": {
+      "oneClick": true,
+      "deleteAppDataOnUninstall": false,
+      "artifactName": "EyeGate-Setup-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "EyeGate-Portable-${version}.${ext}"
+    }
+  }
+}
